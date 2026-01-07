@@ -9,13 +9,14 @@ class Carrinho:
     def remover_item(self, produto: Produto):
         self.itens.remove(item) #se qtde do item <=0 = retira do carrinho
 
-    def calcular_total(self):
+    def calcular_subtotal(self):
         return sum(item.calcular_subtotal() for item in self.itens)
 
+    #mesmo que __str__
     def listar_itens(self):
         if not self.itens:
             return "Carrinho vazio."
-        
+
         linhas = []
         for i, item in enumerate(self.itens, start=1):
             linhas.append(f"{i} - {item.produto.nome} - Qtde: {item.qtde} - Subtotal: R$ {item.calcular_subtotal():.2f}")

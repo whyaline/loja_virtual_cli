@@ -4,23 +4,6 @@ class Endereco:
         self.uf = uf
         self.cep = cep
 
-    def validar_string(self, valor, campo):
-        if not isinstance(valor, str) or len(valor.strip()) <= 0:
-            raise ValueError(f"{campo} deve ser uma string e não pode ser vazio!")
-
-        if not valor.replace(" ", "").isalpha():
-            raise ValueError(f"{campo} deve conter apenas letras!")
-
-
-    def validar_numero(self, valor, campo, tamanho=None):
-        valor = str(valor)
-
-        if not valor.isdigit():
-            raise ValueError(f"{campo} deve conter apenas números")
-
-        if tamanho is not None and len(valor) != tamanho:
-            raise ValueError(f"{campo} deve conter {tamanho} dígitos")
-
     @property
     def cidade(self):
         return self.__cidade
@@ -28,7 +11,7 @@ class Endereco:
     #validação
     @cidade.setter
     def cidade(self, cidade):
-        self.validar_string(cidade, "Cidade")
+        validar_string(cidade, "Cidade")
 
         self.__cidade = cidade.strip()
 
@@ -58,18 +41,21 @@ class Endereco:
     #validação
     @cep.setter
     def cep(self, cep):
-        self.validar_numero(cep, "CEP", 8)
+        validar_numero(cep, "CEP", 8)
         self.__cep = cep
 
     #métodos especiais
     def __str__(self):
-        return f'{self.cep}, {self.cidade}, {self.uf}'
+        return f'Cidade: {self.cidade}, UF: {self.uf}, CEP: {self.cep}'
 
     def __repr__(self):
-        pass
+        return f'Endereco(cidade={self.cidade!r}, uf={self.uf!r}, cep={self.cep!r})'
 
-    def __eq__(self): #comparar se dois endereços são iguais ao remover de um cliente
-        pass
+    def __eq__(self, outro): #comparar se dois endereços são iguais ao remover de um cliente
+        if not isinstance(outro, Endereco):
+            return NotImplemented
+
+        return self.cidade == outro.cidade and self.uf == outro.uf and self.cep == outro.cep
 
 
     #persistência
@@ -78,8 +64,3 @@ class Endereco:
 
     def from_dict(cls, dict):
         pass
-
-e = Endereco ("crato", "ce", "10201001") #o input sempre irá retornar string, cep entre aspas para facilitar testes
-print(e.cidade)
-print(e.uf)
-print(e.cep)

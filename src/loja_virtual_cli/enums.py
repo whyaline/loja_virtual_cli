@@ -6,3 +6,15 @@ class StatusPedido(Enum):
     ENVIADO = "ENVIADO"
     ENTREGUE = "ENTREGUE"
     CANCELADO = "CANCELADO"
+    
+class FormaPagamento(Enum):
+    PIX = "PIX"
+    CREDITO = "CREDITO"
+    DEBITO = "DEBITO"
+    BOLETO = "BOLETO"
+
+class StatusPagamento(Enum):
+    PENDENTE = "PENDENTE"
+    CONFIRMADO = "CONFIRMADO"
+    ESTORNADO = "ESTORNADO"
+    CANCELADO = "CANCELADO"

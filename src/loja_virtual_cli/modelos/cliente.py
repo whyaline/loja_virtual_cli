@@ -1,6 +1,10 @@
 class Cliente:
-    def __init__(self, id, nome, cpf, email):
-        self.id = id
+    _last_id = 0 
+
+    def __init__(self, nome, cpf, email):
+        Cliente._last_id += 1
+
+        self.id = Cliente._last_id # gerar automatico a cada instância
         self.nome = nome #validar
         self.cpf = cpf #validar
         self.email = email #validar
@@ -118,4 +122,5 @@ class Cliente:
 
     def from_dict(cls, dict):
         pass
+
 

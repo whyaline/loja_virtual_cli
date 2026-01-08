@@ -2,6 +2,7 @@ class RepositorioClientes:
     #CRUD
     def __init__(self):
         self.__clientes = [] #lista com as instâncias criadas
+        self.__proximo_id = 1
 
     def existe_cpf(self, cpf, exceto=None):
         return any(c.cpf == cpf and c is not exceto for c in self.__clientes)
@@ -19,6 +20,9 @@ class RepositorioClientes:
         
         if self.existe_email(cliente.email):
             raise ValueError(f'Já existe um cliente com email {cliente.email}')
+
+        cliente._definir_id(self.__proximo_id)
+        self.__proximo_id += 1
 
         self.__clientes.append(cliente)
 

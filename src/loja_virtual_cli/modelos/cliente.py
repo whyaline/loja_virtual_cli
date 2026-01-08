@@ -5,6 +5,48 @@ class Cliente:
         self.cpf = cpf #validar
         self.email = email #validar
         self.enderecos = []
+        
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, id):
+        validar_numero(id, "ID", tipo=int, permitir_zero=False)
+        self.__id = id
+
+    @property
+    def nome(self):
+        return self.__nome
+
+    @nome.setter
+    def nome(self, nome):
+        validar_string(nome, "Nome")
+        self.__nome = nome
+
+    @property
+    def cpf(self):
+        return self.__cpf
+
+    @cpf.setter
+    def cpf(self, cpf):
+        validar_numero(cpf, "CPF", tipo=int, tamanho=11)
+        self.__cpf = cpf
+
+    @property
+    def email(self):
+        return self.__email
+
+    @email.setter
+    def email(self, email):
+        if '@' not in email or '.' not in email:
+            raise ValueError ("Email Inválido")
+        else:
+            self.__email = email
+
+    @property
+    def enderecos(self):
+        return self.__enderecos.copy()
 
     def adicionar_endereco(self, endereco: Endereco):
         self.enderecos.append(endereco)

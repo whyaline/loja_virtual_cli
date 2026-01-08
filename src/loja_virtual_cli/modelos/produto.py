@@ -1,20 +1,22 @@
 from abc import ABC, abstractmethod
 
 class Produto (ABC):
-    def __init__(self, sku, nome, categoria, preco, estoque, ativo):
-        self.sku = sku #unico -> validar em repositório
-        self.nome = nome 
-        self.categoria = categoria 
-        self.preco = preco 
-        self.estoque = estoque 
-        self.ativo = ativo 
+    def __init__(self, nome, categoria, preco, estoque, ativo):
+        self.__sku = None #unico -> validar em repositório
+        self.nome = nome
+        self.categoria = categoria
+        self.preco = preco
+        self.estoque = estoque
+        self.ativo = ativo
 
     @property
     def sku(self):
         return self.__sku #implementar automático no repositório
 
-    @sku.setter
-    def sku(self, sku):
+    def _definir_sku(self, sku):
+        if self.__sku is not None:
+            raise ValueError("SKU já definido")
+
         validar_numero(sku, "SKU", tipo=int, permitir_zero=False)
         self.__sku = sku
 
@@ -108,6 +110,9 @@ class Produto (ABC):
         if not isinstance(outro, Produto):
             return NotImplemented
 
+        if self.sku is None or outro.sku is None:
+            return False
+
         return self.sku == outro.sku
 
     def __lt__(self, outro): #ordenar por preço ou nome
@@ -118,10 +123,11 @@ class Produto (ABC):
 
 
 class ProdutoFisico(Produto):
-    def __init__(self, sku, nome, categoria, preco, estoque, ativo, peso):
-        super().__init__(sku, nome, categoria, preco, estoque, ativo)
+    def __init__(self, nome, categoria, preco, estoque, ativo, peso):
+        super().__init__(nome, categoria, preco, estoque, ativo)
         self.peso = peso #validar - > 0
 
+   
     @property
     def peso(self):
         return self.__peso

@@ -1,23 +1,21 @@
 class Cliente:
-    _last_id = 0 
-
     def __init__(self, nome, cpf, email):
-        Cliente._last_id += 1
-
-        self.id = Cliente._last_id # gerar automatico a cada instância
+        self.__id = None #atribuído pelo repositório 
         self.nome = nome #validar
         self.cpf = cpf #validar
         self.email = email #validar
-        self.enderecos = []
+        self.__enderecos = []
 
-    #deficição de getters e setters
     @property
     def id(self):
         return self.__id
 
-    @id.setter
-    def id(self, id):
+    def _definir_id(self, id):
+        if self.__id is not None:
+            raise ValueError("ID já definido")
+
         validar_numero(id, "ID", tipo=int, permitir_zero=False)
+
         self.__id = id
 
     @property
@@ -56,7 +54,6 @@ class Cliente:
     def tem_endereco(self):
         return len(self.__enderecos) > 0
 
-    #CRUD de endereço
     def adicionar_endereco(self, endereco):
         if not isinstance(endereco, Endereco):
             raise ValueError("Endereço inválido")
@@ -95,7 +92,8 @@ class Cliente:
             raise ValueError("Endereço não encontrado")
 
         self.__enderecos.remove(endereco)
-    
+
+
     # métodos especiais
     def __str__(self):
         if self.__enderecos:
@@ -115,7 +113,7 @@ class Cliente:
 
         return self.cpf == outro.cpf or self.email == outro.email
 
-    
+
     #persistência
     def to_dict(self):
         pass
@@ -123,4 +121,4 @@ class Cliente:
     def from_dict(cls, dict):
         pass
 
-
+ 

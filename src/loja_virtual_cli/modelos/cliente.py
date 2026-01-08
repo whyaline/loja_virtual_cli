@@ -94,14 +94,22 @@ class Cliente:
     
     # métodos especiais
     def __str__(self):
-        return f'Nome: {self.nome}, Email: {self.email}, CPF: {self.cpf}'
+        if self.__enderecos:
+            enderecos_str = '; '.join(str(e) for e in self.__enderecos)
+        else:
+            enderecos_str = "Nenhum"
+
+        return f'Nome: {self.nome}, CPF: {self.cpf}, Email: {self.email}, Endereços: [{enderecos_str}]'
 
     def __repr__(self):
-        pass
+        return (f"Cliente(id={self.id!r}, nome={self.nome!r}, cpf={self.cpf!r}, "
+                f"email={self.email!r}, enderecos={self.__enderecos!r})")
 
-    def __eq__(self):
-        #por email/cpf
-        pass
+    def __eq__(self, outro): #por cpf ou email
+        if not isinstance(outro, Cliente):
+            return NotImplemented
+
+        return self.cpf == outro.cpf or self.email == outro.email
 
     
     #persistência
@@ -110,3 +118,4 @@ class Cliente:
 
     def from_dict(cls, dict):
         pass
+

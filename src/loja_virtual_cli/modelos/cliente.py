@@ -5,7 +5,8 @@ class Cliente:
         self.cpf = cpf #validar
         self.email = email #validar
         self.enderecos = []
-        
+
+    #deficição de getters e setters
     @property
     def id(self):
         return self.__id
@@ -48,42 +49,49 @@ class Cliente:
     def enderecos(self):
         return self.__enderecos.copy()
 
-    def adicionar_endereco(self, endereco: Endereco):
-        self.enderecos.append(endereco)
+    def tem_endereco(self):
+        return len(self.__enderecos) > 0
 
-    # Read
-    def listar_clientes(self):
-        for cliente in self.clientes:
-            print(cliente)
+    #CRUD de endereço
+    def adicionar_endereco(self, endereco):
+        if not isinstance(endereco, Endereco):
+            raise ValueError("Endereço inválido")
 
-    def listar_enderecos(self):
-        for endereco in self.enderecos:
-            print(endereco)
+        if endereco in self.__enderecos:
+            raise ValueError("Endereço já cadastrado")
 
-    def tem_endereco(self, endereco: Endereco):
-        #retorna true or false
+        self.__enderecos.append(endereco)
 
-    # Update: setter?
-    def alterar_nome(self, nome):
-        self.nome = nome
+    def buscar_endereco_por_cep(self, cep):
+        for endereco in self.__enderecos:
+            if endereco.cep == cep:
+                return endereco
 
-    def alterar_email(self, email):
-        self.email = email
-        #impedir se duplicado
+        return None
 
-    def alterar_cpf(self, cpf):
-        self.cpf = cpf
-        #impedir se duplicado
+    def alterar_endereco(self, cep, cidade_novo=None, uf_novo=None, cep_novo=None):
+        endereco = self.buscar_endereco_por_cep(cep)
 
-    def alterar_endereco(self, endereco):
-        #lista os endereços e escolhe um pra alterar
-        pass
+        if endereco is None:
+            raise ValueError("Endereço não encontrado")
 
-    # Delete
-    def remover_endereco(self, endereco: Endereco):
-        self.enderecos.remove(endereco)
-        #remover por cep
+        if cidade_novo is not None:
+            endereco.cidade = cidade_novo
 
+        if uf_novo is not None:
+            endereco.uf = uf_novo
+
+        if cep_novo is not None:
+            endereco.cep = cep_novo
+
+    def remover_endereco(self, cep): #remover por cep
+        endereco = self.buscar_endereco_por_cep(cep)
+
+        if endereco is None:
+            raise ValueError("Endereço não encontrado")
+
+        self.__enderecos.remove(endereco)
+    
     # métodos especiais
     def __str__(self):
         return f'Nome: {self.nome}, Email: {self.email}, CPF: {self.cpf}'
@@ -102,8 +110,3 @@ class Cliente:
 
     def from_dict(cls, dict):
         pass
-
-
-
-for endereco in c.enderecos:
-    print(endereco)

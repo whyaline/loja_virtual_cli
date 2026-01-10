@@ -1,3 +1,5 @@
+from src.utils import validar_string, validar_numero
+
 class RepositorioProdutos:
     def __init__(self):
         self.__produtos = []

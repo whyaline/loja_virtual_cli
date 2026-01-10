@@ -1,3 +1,5 @@
+from src.utils import validar_string, validar_numero
+
 class Endereco:
     def __init__(self, cidade, uf, cep):
         self.cidade = cidade
@@ -41,7 +43,7 @@ class Endereco:
     #validação
     @cep.setter
     def cep(self, cep):
-        validar_numero(cep, "CEP", 8)
+        validar_numero(cep, "CEP", tipo=int, tamanho=8, permitir_zero=False)
         self.__cep = cep
 
     #métodos especiais
@@ -64,3 +66,4 @@ class Endereco:
 
     def from_dict(cls, dict):
         pass
+

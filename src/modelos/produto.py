@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.utils import validar_string, validar_numero
 
 class Produto (ABC):
     def __init__(self, nome, categoria, preco, estoque, ativo):

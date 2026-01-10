@@ -1,3 +1,6 @@
+from src.utils import validar_string, validar_numero
+from src.modelos.endereco import Endereco
+
 class Cliente:
     def __init__(self, nome, cpf, email):
         self.__id = None #atribuído pelo repositório 

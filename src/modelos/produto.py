@@ -122,13 +122,24 @@ class Produto (ABC):
 
         return self.preco < outro.preco
 
+    # persistência
+    def to_dict(self):
+        return {
+            "sku": self.sku,
+            "nome": self.nome,
+            "categoria": self.categoria,
+            "preco": self.preco,
+            "estoque": self.estoque,
+            "ativo": self.ativo
+        }
+
 
 class ProdutoFisico(Produto):
     def __init__(self, nome, categoria, preco, estoque, ativo, peso):
         super().__init__(nome, categoria, preco, estoque, ativo)
         self.peso = peso #validar - > 0
 
-   
+
     @property
     def peso(self):
         return self.__peso
@@ -146,12 +157,25 @@ class ProdutoFisico(Produto):
         return f"{super().__str__()}, Peso: {self.peso}"
 
     #persistência
-    def to_dict(self): #incluir tipo físico
-        pass
+    def to_dict(self):
+        data = super().to_dict()
+        data["tipo"] = "fisico"
+        data["peso"] = self.peso
+        return data
 
     @classmethod
-    def from_dict(cls, dict):
-        pass
+    def from_dict(cls, data):
+        produto = cls(
+            nome=data["nome"],
+            categoria=data["categoria"],
+            preco=data["preco"],
+            estoque=data["estoque"],
+            ativo=data["ativo"],
+            peso=data["peso"]
+        )
+        if data["sku"] is not None:
+            produto._definir_sku(data["sku"])
+        return produto
 
 
 class ProdutoDigital(Produto):
@@ -159,10 +183,20 @@ class ProdutoDigital(Produto):
         return False
 
     #persistência
-    def to_dict(self): #incluir tipo digital
-        pass
+    def to_dict(self):
+        data = super().to_dict()
+        data["tipo"] = "digital"
+        return data
 
     @classmethod
-    def from_dict(cls, dict):
-        pass
-
+    def from_dict(cls, data):
+        produto = cls(
+            nome=data["nome"],
+            categoria=data["categoria"],
+            preco=data["preco"],
+            estoque=data["estoque"],
+            ativo=data["ativo"]
+        )
+        if data["sku"] is not None:
+            produto._definir_sku(data["sku"])
+        return produto

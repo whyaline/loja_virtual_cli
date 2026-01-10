@@ -62,8 +62,16 @@ class Endereco:
 
     #persistência
     def to_dict(self):
-        pass
+        return {
+            "cidade": self.cidade,
+            "uf": self.uf,
+            "cep": self.cep
+        }
 
+    @classmethod
     def from_dict(cls, dict):
-        pass
-
+        return cls(
+            cidade=dict["cidade"],
+            uf=dict["uf"],
+            cep=dict["cep"]
+        )

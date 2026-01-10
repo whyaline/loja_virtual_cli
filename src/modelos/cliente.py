@@ -119,9 +119,24 @@ class Cliente:
 
     #persistência
     def to_dict(self):
-        pass
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "cpf": self.cpf,
+            "email": self.email,
+            "enderecos": [endereco.to_dict() for endereco in self.__enderecos]
+        }
 
+    @classmethod
     def from_dict(cls, dict):
-        pass
+        cliente = cls(
+            nome=dict["nome"],
+            cpf=dict["cpf"],
+            email=dict["email"]
+        )
+        if dict["id"] is not None:
+            cliente._definir_id(dict["id"])
 
- 
+        for endereco_data in dict["enderecos"]:
+            cliente.adicionar_endereco(Endereco.from_dict(endereco_data))
+        return cliente

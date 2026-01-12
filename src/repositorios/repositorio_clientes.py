@@ -1,8 +1,12 @@
+from src.modelos.cliente import Cliente
+import json
+
 class RepositorioClientes:
     #CRUD
     def __init__(self):
         self.__clientes = [] #lista com as instâncias criadas
         self.__proximo_id = 1
+        self.arquivo_dados = "clientes_data.json"
 
     def existe_cpf(self, cpf, exceto=None):
         return any(c.cpf == cpf and c is not exceto for c in self.__clientes)
@@ -100,11 +104,29 @@ class RepositorioClientes:
 
         self.__clientes.remove(cliente)
 
-    #salvar dados
+
+    #persistência
     def salvar_dados(self):
-      pass
+        data_to_save = {
+            "proximo_id": self.__proximo_id,
+            "clientes": [c.to_dict() for c in self.__clientes]
+        }
+        with open(self.arquivo_dados, 'w', encoding='utf-8') as f:
+            json.dump(data_to_save, f, ensure_ascii=False, indent=4)
+        print(f"Dados de clientes salvos em {self.arquivo_dados}")
 
     #carregar dados
     def carregar_dados(self):
-      pass
-
+        try:
+            with open(self.arquivo_dados, 'r', encoding='utf-8') as f:
+                data_loaded = json.load(f)
+            self.__proximo_id = data_loaded.get("proximo_id", 1)
+            self.__clientes = []
+            for cliente_data in data_loaded.get("clientes", []):
+                cliente = Cliente.from_dict(cliente_data)
+                self.__clientes.append(cliente)
+            print(f"Dados de clientes carregados de {self.arquivo_dados}")
+        except FileNotFoundError:
+            print(f"Arquivo de dados {self.arquivo_dados} não encontrado. Iniciando com repositório vazio.")
+        except json.JSONDecodeError:
+            print(f"Erro ao decodificar JSON de {self.arquivo_dados}. Iniciando com repositório vazio.")

@@ -1,0 +1,77 @@
+{
+  "frete": {
+    "faixas_cep": [
+      {
+        "uf": "BA",
+        "inicio": "40000-000",
+        "fim": "48999-999",
+        "valor": 18,
+        "prazo": 5
+      },
+      {
+        "uf": "PE",
+        "inicio": "50000-000",
+        "fim": "56999-999",
+        "valor": 20,
+        "prazo": 6
+      },
+      {
+        "uf": "CE",
+        "inicio": "60000-000",
+        "fim": "63999-999",
+        "valor": 22,
+        "prazo": 6
+      },
+      {
+        "uf": "RN",
+        "inicio": "59000-000",
+        "fim": "59999-999",
+        "valor": 21,
+        "prazo": 6
+      },
+      {
+        "uf": "PB",
+        "inicio": "58000-000",
+        "fim": "58999-999",
+        "valor": 21,
+        "prazo": 6
+      },
+      {
+        "uf": "AL",
+        "inicio": "57000-000",
+        "fim": "57999-999",
+        "valor": 23,
+        "prazo": 7
+      },
+      {
+        "uf": "SE",
+        "inicio": "49000-000",
+        "fim": "49999-999",
+        "valor": 23,
+        "prazo": 7
+      },
+      {
+        "uf": "PI",
+        "inicio": "64000-000",
+        "fim": "64999-999",
+        "valor": 24,
+        "prazo": 7
+      },
+      {
+        "uf": "MA",
+        "inicio": "65000-000",
+        "fim": "65999-999",
+        "valor": 25,
+        "prazo": 8
+      }
+    ],
+
+    "default": {
+      "valor": 30,
+      "prazo": 10
+    }
+  },
+  "coupon": {
+    "default_validity_days": 30
+  }
+}

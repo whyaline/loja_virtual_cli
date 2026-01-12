@@ -1,74 +1,162 @@
-class Pedido: #criar a partir do carrinho
-    def __init__(self, id, cliente: Cliente, carrinho: Carrinho, endereco: Endereco, frete: Frete, desconto):
-        self.id = id
+from datetime import datetime
+from enum import Enum
+import random
+import string
+
+from src.modelos.item_pedido import ItemPedido
+from src.modelos.pagamento import Pagamento
+from src.modelos.produto import ProdutoFisico
+
+from src.utils.enums import StatusPagamento, StatusPedido
+from src.utils.validacoes import validar_numero
+
+class Pedido:
+    def __init__(self, cliente, endereco, carrinho, frete_valor=0, desconto=0):
+        if not carrinho.itens:
+            raise ValueError("O carrinho está vazio")
+
+        self.__id = None
         self.cliente = cliente
-        self.itens = self._criar_itens(carrinho)
         self.endereco = endereco
-        self.frete = frete
+        self.itens = [ItemPedido(produto=item.produto, quantidade=item.qtde) for item in carrinho.itens]
+        self.frete_valor = frete_valor
         self.desconto = desconto
-        self.estado = StatusPedido.CRIADO
-        self.total = self.calcular_total()
+        self.status = StatusPedido.CRIADO
+        self.data_criacao = datetime.now()
         self.pagamentos = []
+        self.codigo_rastreio = None
+        self.data_entrega = None
 
-    def _criar_itens(self, carrinho: Carrinho):
-        itens = []
-        for item in carrinho.itens:
-            itens.append(
-                ItemPedido(
-                    sku = item.produto.sku,
-                    nome = item.produto.nome,
-                    preco = item.produto.preco,
-                    qtde = item.qtde
-                )
-            )
-        return itens
+    @property
+    def id(self):
+        return self.__id
 
-    def validar(self):
-        if not self.itens:
-            raise ValueError("O pedido deve conter pelo menos um item")
-        
-        if self.frete.valor < 0:
-            raise ValueError("O valor do frete deve ser maior ou igual a zero")
+    def _definir_id(self, id):
+        if self.__id is not None:
+            raise ValueError("ID já definido para o pedido")
+        validar_numero(id, "ID do Pedido", tipo=int, permitir_zero=False)
+        self.__id = id
 
-        if self.desconto < 0:
-            raise ValueError("O desconto deve ser maior ou igual a zero")
+    @property
+    def total_produtos(self):
+        return sum(item.subtotal for item in self.itens)
 
-        if self.total < 0:
-            raise ValueError("O total do pedido deve ser maior ou igual a zero")
+    @property
+    def total(self):
+        return max(self.total_produtos + self.frete_valor - self.desconto, 0)
 
-    def calcular_total(self):
-        subtotal = sum(item.subtotal() for item in self.itens)
-        return subtotal + self.frete.valor - self.desconto
+    def pagar(self):
+        if self.status != StatusPedido.CRIADO:
+            raise ValueError("Só é possível pagar um pedido que está CRIADO")
+        self.status = StatusPedido.PAGO
 
-    def confirmar_pagamento(self, pagamento):
+    def registrar_pagamento(self, pagamento: 'Pagamento'):
+        if self.status in (StatusPedido.ENTREGUE, StatusPedido.CANCELADO):
+            raise ValueError("Não é possível pagar um pedido finalizado ou cancelado")
+
         self.pagamentos.append(pagamento)
 
-        total_pago = sum(p.valor for p in self.pagamentos)
-        if total_pago >= self.total:
-            self.estado = StatusPedido.PAGO
+        total_pago = sum(p.valor for p in self.pagamentos if p.status == StatusPagamento.CONFIRMADO)
+        if total_pago >= self.total and self.status == StatusPedido.CRIADO:
+            self.status = StatusPedido.PAGO
+
+
 
     def cancelar(self):
-        if self.estado not in [StatusPedido.CRIADO, StatusPedido.PAGO]:
+        if self.status not in (StatusPedido.CRIADO, StatusPedido.PAGO):
             raise ValueError("Pedido não pode ser cancelado neste estado")
 
-        self.estado = StatusPedido.CANCELADO
+        self.status = StatusPedido.CANCELADO
 
-    def gerar_resumo(self):
-        pass
+        # reposição de estoque
+        for item in self.itens:
+            if isinstance(item.produto, ProdutoFisico):
+                item.produto.adicionar_estoque(item.quantidade)
+
+        # estorno financeiro ou cancelamento de pagamentos pendentes
+        for pagamento in self.pagamentos:
+            if pagamento.status == StatusPagamento.CONFIRMADO:
+                pagamento.estornar()
+            elif pagamento.status == StatusPagamento.PENDENTE:
+                pagamento.cancelar_pagamento()
+
+    def _gerar_codigo_rastreio(self, length=13):
+        chars = string.ascii_uppercase + string.digits
+        return ''.join(random.choice(chars) for _ in range(length))
+
+    def enviar(self):
+        if self.status != StatusPedido.PAGO:
+            raise ValueError("Só é possível enviar um pedido que está PAGO")
+        self.status = StatusPedido.ENVIADO
+        self.codigo_rastreio = self._gerar_codigo_rastreio() # gera o código de rastreio
+        print(f"Pedido {self.id} enviado. Código de rastreio: {self.codigo_rastreio}")
+
+    def entregar(self, data_entrega: datetime = None):
+        if self.status != StatusPedido.ENVIADO:
+            raise ValueError("Só é possível entregar um pedido que está ENVIADO")
+        self.status = StatusPedido.ENTREGUE
+        self.data_entrega = data_entrega or datetime.now() # registra a data de entrega
+
+    def resumo(self):
+        endereco = self.endereco
+        endereco_str = f"{endereco.cidade}-{endereco.uf}, CEP: {endereco.cep}"
+
+        linhas = [
+            f"Pedido ID: {self.id}",
+            f"Pedido - Status: {self.status.value}"
+        ]
+        if self.codigo_rastreio:
+            linhas.append(f"Código de Rastreio: {self.codigo_rastreio}")
+        if self.data_entrega:
+            linhas.append(f"Data de Entrega: {self.data_entrega.strftime('%d/%m/%Y %H:%M')}")
+
+        linhas.extend([
+            f"Cliente: {self.cliente.nome}",
+            f"Endereço: {endereco_str}",
+            "Itens:"
+        ])
+        for item in self.itens:
+            linhas.append(f"  {item}")
+        linhas.append(f"Subtotal produtos: R$ {self.total_produtos:.2f}")
+        linhas.append(f"Frete: R$ {self.frete_valor:.2f}")
+        linhas.append(f"Desconto: R$ {self.desconto:.2f}")
+        linhas.append(f"Total: R$ {self.total:.2f}")
+        return "\n".join(linhas)
+
 
     #métodos especiais
     def __str__(self):
-        return
-    
+        return self.resumo()
+
     def __repr__(self):
-        pass
+        return (f"Pedido(id={self.id!r}, cliente={self.cliente!r}, itens={self.itens!r}, "
+                f"frete_valor={self.frete_valor}, desconto={self.desconto})")
 
     #persistencia
     def to_dict(self):
-        pass
+        return {
+            "id": self.id,
+            "cliente_id": self.cliente.id,
+            "itens": [
+                {"sku": item.sku, "nome": item.nome, "quantidade": item.quantidade, "preco_unitario": item.preco_unitario}
+                for item in self.itens
+            ],
+            "frete_valor": self.frete_valor,
+            "desconto": self.desconto,
+            "status": self.status.value,
+            "data_criacao": self.data_criacao.isoformat(),
+            "codigo_rastreio": self.codigo_rastreio,
+            "data_entrega": self.data_entrega.isoformat() if self.data_entrega else None,
+            "total": self.total
+        }
 
-    def from_dict(cls, dict):
-        pass
-
-    
-    
+    @classmethod
+    def from_dict(cls, data, cliente, carrinho):
+        pedido = cls(cliente, carrinho, frete_valor=data["frete_valor"], desconto=data["desconto"])
+        pedido._definir_id(data["id"])
+        pedido.status = StatusPedido(data["status"])
+        pedido.data_criacao = datetime.fromisoformat(data["data_criacao"])
+        pedido.codigo_rastreio = data.get("codigo_rastreio")
+        if data.get("data_entrega"):
+            pedido.data_entrega = datetime.fromisoformat(data["data_entrega"])
+        return pedido

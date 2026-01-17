@@ -17,3 +17,11 @@ def carregar_tabela_frete():
 def default_coupon_validity_days():
     settings = carregar_settings()
     return settings["coupon"]["default_validity_days"]
+
+def obter_top_n_produtos():
+    settings = carregar_settings()
+    return settings.get("relatorios", {}).get("top_n_produtos", 5)
+
+def obter_janela_cancelamento_horas():
+    settings = carregar_settings()
+    return settings.get("pedido", {}).get("janela_cancelamento_horas", 24)

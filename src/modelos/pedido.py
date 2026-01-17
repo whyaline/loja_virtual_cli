@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import string
 
@@ -8,6 +8,7 @@ from src.modelos.produto import ProdutoFisico
 
 from src.utils.enums import StatusPagamento, StatusPedido
 from src.utils.validacoes import validar_numero
+from src.utils.config import obter_janela_cancelamento_horas
 
 class Pedido:
     def __init__(self, cliente, endereco, carrinho, frete_valor=0, desconto=0):
@@ -65,6 +66,14 @@ class Pedido:
         if self.status not in (StatusPedido.CRIADO, StatusPedido.PAGO):
             raise ValueError("Pedido não pode ser cancelado neste estado")
 
+        janela_horas = obter_janela_cancelamento_horas()
+        limite = self.data_criacao + timedelta(hours=janela_horas)
+
+        if datetime.now() > limite:
+            raise ValueError(
+                f"Cancelamento permitido apenas até {janela_horas}h após a criação do pedido"
+            )
+
         self.status = StatusPedido.CANCELADO
 
         # reposição de estoque
@@ -72,7 +81,7 @@ class Pedido:
             if isinstance(item.produto, ProdutoFisico):
                 item.produto.adicionar_estoque(item.quantidade)
 
-        # estorno financeiro ou cancelamento de pagamentos pendentes
+        # estorno financeiro
         for pagamento in self.pagamentos:
             if pagamento.status == StatusPagamento.CONFIRMADO:
                 pagamento.estornar()

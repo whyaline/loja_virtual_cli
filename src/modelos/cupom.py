@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from src.utils.config import default_coupon_validity_days
 
 class Cupom:
     def __init__(self, codigo: str, tipo: str, valor: float, data_validade: date = None, uso_maximo: int = 0, usos_feitos: int = 0, categorias_elegiveis=None):
@@ -17,7 +18,7 @@ class Cupom:
         if data_validade is None:
             #usa a validade padrão de cupom definido no settings
             global default_coupon_validity_days
-            self.data_validade = date.today() + timedelta(days=default_coupon_validity_days)
+            self.data_validade = date.today() + timedelta(default_coupon_validity_days())
         else:
             self.data_validade = data_validade
 

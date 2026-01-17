@@ -1,16 +1,17 @@
 from datetime import datetime
 from src.utils.enums import FormaPagamento, StatusPagamento
-from src.modelos.pedido import Pedido
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.modelos.pedido import Pedido
 
 class Pagamento:
-    def __init__(self, pedido, valor: float, forma: FormaPagamento, data=None):
+    def __init__(self, pedido: "Pedido", valor: float, forma: FormaPagamento, data=None):
         #verifica se os valores e tipos são válidos para criar a instância
         if valor <= 0:
             raise ValueError("O valor do pagamento deve ser positivo")
-
-        if not isinstance(pedido, Pedido):
-            raise TypeError("Pagamento precisa estar associado a um Pedido")
-
+        
         if not isinstance(forma, FormaPagamento):
             raise ValueError("Forma de pagamento inválida")
 
@@ -61,7 +62,7 @@ class Pagamento:
         }
 
     @classmethod
-    def from_dict(cls, data: dict, pedido: 'Pedido'):
+    def from_dict(cls, data: dict, pedido: "Pedido"):
         # o pedido deve ser fornecido externamente ao recriar o pagamento
         pagamento = cls(
             pedido=pedido,

@@ -1,5 +1,5 @@
 from src.modelos.cliente import Cliente
-import json
+from src.dados.dados import salvar_lista, carregar_lista
 
 class RepositorioClientes:
     #CRUD
@@ -106,27 +106,24 @@ class RepositorioClientes:
 
 
     #persistência
-    def salvar_dados(self):
-        data_to_save = {
-            "proximo_id": self.__proximo_id,
-            "clientes": [c.to_dict() for c in self.__clientes]
-        }
-        with open(self.arquivo_dados, 'w', encoding='utf-8') as f:
-            json.dump(data_to_save, f, ensure_ascii=False, indent=4)
-        print(f"Dados de clientes salvos em {self.arquivo_dados}")
+    def salvar(self):
+        salvar_lista(
+            "clientes",
+            {
+                "proximo_id": self.__proximo_id,
+                "clientes": [c.to_dict() for c in self.__clientes]
+            }
+        )
 
-    #carregar dados
-    def carregar_dados(self):
-        try:
-            with open(self.arquivo_dados, 'r', encoding='utf-8') as f:
-                data_loaded = json.load(f)
-            self.__proximo_id = data_loaded.get("proximo_id", 1)
-            self.__clientes = []
-            for cliente_data in data_loaded.get("clientes", []):
-                cliente = Cliente.from_dict(cliente_data)
-                self.__clientes.append(cliente)
-            print(f"Dados de clientes carregados de {self.arquivo_dados}")
-        except FileNotFoundError:
-            print(f"Arquivo de dados {self.arquivo_dados} não encontrado. Iniciando com repositório vazio.")
-        except json.JSONDecodeError:
-            print(f"Erro ao decodificar JSON de {self.arquivo_dados}. Iniciando com repositório vazio.")
+    def carregar(self):
+        dados = carregar_lista("clientes")
+
+        if not dados:
+            return
+
+        self.__proximo_id = dados.get("proximo_id", 1)
+        self.__clientes = []
+
+        for cliente_data in dados.get("clientes", []):
+            cliente = Cliente.from_dict(cliente_data)
+            self.__clientes.append(cliente)

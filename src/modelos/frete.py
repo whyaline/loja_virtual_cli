@@ -16,11 +16,15 @@ class Frete:
 
     def _buscar_regra(self):
         cep = self.endereco.cep.replace("-", "")
+        uf = self.endereco.uf
+
         for faixa in self.tabela_frete["faixas_cep"]:
             inicio = faixa["inicio"].replace("-", "")
             fim = faixa["fim"].replace("-", "")
-            if inicio <= cep <= fim:
+
+            if faixa["uf"] == uf and inicio <= cep <= fim:
                 return faixa
+
         return self.tabela_frete["default"]
 
     def calcular_preview(self, carrinho: Carrinho):
@@ -40,4 +44,7 @@ class Frete:
             self.valor = 0
             self.prazo = 0
 
-        return {"valor": self.valor, "prazo": self.prazo}
+        return {
+            "valor": self.valor,
+            "prazo": self.prazo
+        }

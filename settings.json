@@ -65,13 +65,28 @@
         "prazo": 8
       }
     ],
-
     "default": {
       "valor": 30,
       "prazo": 10
     }
   },
+
+  "relatorios": {
+    "top_n_produtos": 5
+  },
+
   "coupon": {
     "default_validity_days": 30
+  },
+
+  "pagamento": {
+    "parcelamento": {
+      "max_parcelas": 6,
+      "valor_minimo_parcela": 50
+    }
+  },
+
+  "cancelamento": {
+    "janela_horas": 24
   }
 }

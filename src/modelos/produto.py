@@ -180,7 +180,7 @@ class ProdutoFisico(Produto):
 
 class ProdutoDigital(Produto):
     def __init__(self, nome, categoria, preco, ativo):
-        super().__init__(nome, categoria, preco, estoque=0, ativo=ativo)
+        super().__init__(nome, categoria, preco, estoque=99999, ativo=ativo)
 
     def tem_frete(self):
         return False

@@ -10,9 +10,9 @@ from src.modelos.cupom import Cupom
 
 
 def seed():
-    #seed_produtos()
+    seed_produtos()
     seed_clientes()
-    #seed_cupons()
+    seed_cupons()
 
 
 # ======================

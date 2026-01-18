@@ -1,6 +1,6 @@
 from src.utils.config import carregar_tabela_frete
 from src.modelos.endereco import Endereco
-from src.modelos.carrinho import Carrinho
+#from src.modelos.carrinho import Carrinho
 from src.modelos.produto import ProdutoFisico
 
 
@@ -27,9 +27,9 @@ class Frete:
 
         return self.tabela_frete["default"]
 
-    def calcular_preview(self, carrinho: Carrinho):
-        if not isinstance(carrinho, Carrinho):
-            raise TypeError("carrinho deve ser uma instância de Carrinho")
+    def calcular_preview(self, carrinho):
+        if not hasattr(carrinho, "itens"):
+            raise TypeError("Objeto carrinho inválido")
 
         tem_produto_fisico = any(
             isinstance(item.produto, ProdutoFisico)

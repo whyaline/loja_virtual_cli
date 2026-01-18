@@ -3,16 +3,20 @@
     "codigo": "DESC10",
     "tipo": "PERCENTUAL",
     "valor": 10,
+    "data_validade": "2026-02-17",
     "uso_maximo": 100,
-    "uso_atual": 0,
+    "usos_feitos": 0,
     "categorias_elegiveis": []
   },
   {
     "codigo": "ELETRON20",
     "tipo": "VALOR",
     "valor": 20,
+    "data_validade": "2026-02-17",
     "uso_maximo": 50,
-    "uso_atual": 0,
-    "categorias_elegiveis": ["ELETRONICOS"]
+    "usos_feitos": 0,
+    "categorias_elegiveis": [
+      "ELETRONICOS"
+    ]
   }
 ]

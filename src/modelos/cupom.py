@@ -148,7 +148,7 @@ class Cupom:
     @classmethod
     def from_dict(cls, data: dict):
         data_validade = None
-        if "data_validade" in data:
+        if data.get("data_validade"):
             data_validade = date.fromisoformat(data["data_validade"])
 
         return cls(
@@ -156,7 +156,7 @@ class Cupom:
             tipo=data["tipo"],
             valor=data["valor"],
             data_validade=data_validade,
-            uso_maximo=data["uso_maximo"],
-            usos_feitos=data["usos_feitos"],
-            categorias_elegiveis=data.get("categorias_elegiveis")
+            uso_maximo=data.get("uso_maximo", 1),
+            usos_feitos=data.get("usos_feitos", 0),
+            categorias_elegiveis=data.get("categorias_elegiveis", [])
         )

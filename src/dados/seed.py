@@ -9,7 +9,7 @@ from src.modelos.cliente import Cliente
 from src.modelos.cupom import Cupom
 
 
-def executar_seed():
+def seed():
     seed_produtos()
     seed_clientes()
     seed_cupons()

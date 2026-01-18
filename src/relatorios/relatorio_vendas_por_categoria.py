@@ -1,13 +1,7 @@
 from collections import defaultdict
 from src.utils.enums import StatusPedido
 
-
 def gerar_relatorio_vendas_por_categoria(pedidos):
-    """
-    Gera o total de vendas por categoria de produto.
-    Considera apenas pedidos não cancelados.
-    """
-
     vendas_por_categoria = defaultdict(float)
 
     for pedido in pedidos:
@@ -15,7 +9,7 @@ def gerar_relatorio_vendas_por_categoria(pedidos):
             continue
 
         for item in pedido.itens:
-            categoria = item.produto.categoria
+            categoria = getattr(item.produto, "categoria", "OUTROS")
             vendas_por_categoria[categoria] += item.subtotal
 
-    return vendas_por_categoria
+    return dict(vendas_por_categoria)

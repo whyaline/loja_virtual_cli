@@ -1,10 +1,10 @@
+# main.py
 import sys
 from src.cli.dispatcher import dispatch
-from src.dados.seed import executar_seed
 
 def main():
-    executar_seed()
-    dispatch(sys.argv)
+    args = sys.argv[1:]
+    dispatch(args)
 
 if __name__ == "__main__":
     main()

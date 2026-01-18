@@ -2,19 +2,11 @@ from src.modelos.cliente import Cliente
 from src.dados.dados import salvar_lista, carregar_lista
 
 class RepositorioClientes:
-    #CRUD
     def __init__(self):
-        self.__clientes = [] #lista com as instâncias criadas
+        self.__clientes = []
         self.__proximo_id = 1
-        self.arquivo_dados = "clientes_data.json"
 
-    def existe_cpf(self, cpf, exceto=None):
-        return any(c.cpf == cpf and c is not exceto for c in self.__clientes)
-
-    def existe_email(self, email, exceto = None):
-        return any(c.email == email and c is not exceto for c in self.__clientes)
-
-    # criar lista de clientes
+    # CRUD
     def adicionar_cliente(self, cliente: Cliente):
         if not isinstance(cliente, Cliente):
             raise ValueError("O cliente deve ser uma instância de Cliente")
@@ -27,103 +19,59 @@ class RepositorioClientes:
 
         cliente._definir_id(self.__proximo_id)
         self.__proximo_id += 1
-
         self.__clientes.append(cliente)
 
-    # buscar cliente
-    def buscar_cliente_por_id(self, id):
-        for cliente in self.__clientes:
-            if cliente.id == id:
-                return cliente
-        return None
-
-    def buscar_cliente_por_cpf(self, cpf):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                return cliente
-        return None
-
-    # alterar cliente
-    def alterar_cliente_por_id(self, id, nome_novo=None, cpf_novo=None, email_novo=None):
-        cliente = self.buscar_cliente_por_id(id)
-
-        if cliente is None:
-            raise ValueError("Cliente não encontrado")
-        
-        if nome_novo is not None:
-            cliente.nome = nome_novo
-
-        if cpf_novo is not None:
-            if self.existe_cpf(cpf_novo, cliente):
-                raise ValueError(f'Já existe um cliente com CPF {cpf_novo}')
-            cliente.cpf = cpf_novo
-
-        if email_novo is not None:
-            if self.existe_email(email_novo, cliente):
-                  raise ValueError(f'Já existe um cliente com email {email_novo}')
-            cliente.email = email_novo
-
-    def alterar_cliente_por_cpf(self, cpf, nome_novo=None, cpf_novo=None, email_novo=None):
-        cliente = self.buscar_cliente_por_cpf(cpf)
-
-        if cliente is None:
-            raise ValueError("Cliente não encontrado")
-        
-        if nome_novo is not None:
-            cliente.nome = nome_novo
-
-        if cpf_novo is not None:
-            if self.existe_cpf(cpf_novo, cliente):
-                raise ValueError(f'Já existe um cliente com CPF {cpf_novo}')
-            cliente.cpf = cpf_novo
-
-        if email_novo is not None:
-            if self.existe_email(email_novo, cliente):
-                  raise ValueError(f'Já existe um cliente com email {email_novo}')
-            cliente.email = email_novo
-
-
-    # listar clientes
     def listar_clientes(self):
         return self.__clientes.copy()
 
-    # remover cliente
+    def buscar_cliente_por_id(self, id):
+        return next((c for c in self.__clientes if c.id == id), None)
+
+    def buscar_cliente_por_cpf(self, cpf):
+        return next((c for c in self.__clientes if c.cpf == cpf), None)
+
+    def alterar_cliente_por_id(self, id, nome_novo=None, cpf_novo=None, email_novo=None):
+        cliente = self.buscar_cliente_por_id(id)
+        if cliente is None:
+            raise ValueError("Cliente não encontrado")
+        if nome_novo: cliente.nome = nome_novo
+        if cpf_novo:
+            if self.existe_cpf(cpf_novo, cliente):
+                raise ValueError(f'Já existe um cliente com CPF {cpf_novo}')
+            cliente.cpf = cpf_novo
+        if email_novo:
+            if self.existe_email(email_novo, cliente):
+                raise ValueError(f'Já existe um cliente com email {email_novo}')
+            cliente.email = email_novo
+
     def remover_cliente_por_id(self, id):
         cliente = self.buscar_cliente_por_id(id)
-
-        if cliente is None:
+        if not cliente:
             raise ValueError("Cliente não encontrado")
-
         self.__clientes.remove(cliente)
 
-    def remover_cliente_por_cpf(self, cpf):
-        cliente = self.buscar_cliente_por_cpf(cpf)
+    # Validações
+    def existe_cpf(self, cpf, exceto=None):
+        return any(c.cpf == cpf and c is not exceto for c in self.__clientes)
 
-        if cliente is None:
-            raise ValueError("Cliente não encontrado")
+    def existe_email(self, email, exceto=None):
+        return any(c.email == email and c is not exceto for c in self.__clientes)
 
-        self.__clientes.remove(cliente)
+    # Persistência via dados.py
+    def salvar_dados(self):
+        data_to_save = {
+            "proximo_id": self.__proximo_id,
+            "clientes": [c.to_dict() for c in self.__clientes]
+        }
+        salvar_lista("clientes", data_to_save)
+        print("Clientes salvos com sucesso.")
 
-
-    #persistência
-    def salvar(self):
-        salvar_lista(
-            "clientes",
-            {
-                "proximo_id": self.__proximo_id,
-                "clientes": [c.to_dict() for c in self.__clientes]
-            }
-        )
-
-    def carregar(self):
+    def carregar_dados(self):
         dados = carregar_lista("clientes")
-
         if not dados:
+            print("Nenhum cliente encontrado. Repositório vazio.")
             return
 
         self.__proximo_id = dados.get("proximo_id", 1)
-        self.__clientes = []
-
-        for cliente_data in dados.get("clientes", []):
-            cliente = Cliente.from_dict(cliente_data)
-            self.__clientes.append(cliente)
+        self.__clientes = [Cliente.from_dict(c) for c in dados.get("clientes", [])]
+        print(f"{len(self.__clientes)} clientes carregados com sucesso.")

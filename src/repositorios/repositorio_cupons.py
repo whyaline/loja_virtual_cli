@@ -1,21 +1,15 @@
-import json
 from src.modelos.cupom import Cupom
-
+from src.dados.dados import salvar_lista, carregar_lista
 
 class RepositorioCupons:
     def __init__(self):
         self.__cupons = []
-        self.arquivo_dados = "cupons_data.json"
 
     # ======================
     # CONSULTAS
     # ======================
-
     def buscar_por_codigo(self, codigo: str):
-        for cupom in self.__cupons:
-            if cupom.codigo == codigo:
-                return cupom
-        return None
+        return next((c for c in self.__cupons if c.codigo == codigo), None)
 
     def listar_cupons(self, somente_validos=False):
         if not somente_validos:
@@ -27,67 +21,47 @@ class RepositorioCupons:
                 cupom.validar_uso()
                 cupons_validos.append(cupom)
             except ValueError:
-                pass
-
+                continue
         return cupons_validos
 
     # ======================
     # CRUD
     # ======================
-
     def adicionar_cupom(self, cupom: Cupom):
         if not isinstance(cupom, Cupom):
             raise ValueError("Cupom inválido")
-
         if self.buscar_por_codigo(cupom.codigo):
             raise ValueError(f"Cupom '{cupom.codigo}' já existe")
-
         self.__cupons.append(cupom)
 
     def remover_cupom(self, codigo: str):
         cupom = self.buscar_por_codigo(codigo)
         if not cupom:
             raise ValueError("Cupom não encontrado")
-
         self.__cupons.remove(cupom)
 
     # ======================
     # USO DO CUPOM
     # ======================
-
     def aplicar_cupom(self, codigo: str, total_pedido: float, categoria=None):
         cupom = self.buscar_por_codigo(codigo)
-
         if not cupom:
             raise ValueError("Cupom inexistente")
-
         desconto = cupom.calcular_desconto(total_pedido)
         cupom.registrar_uso(categoria)
-
         return desconto
 
     # ======================
-    # PERSISTÊNCIA
+    # PERSISTÊNCIA VIA dados.py
     # ======================
-
     def salvar_dados(self):
-        with open(self.arquivo_dados, "w", encoding="utf-8") as f:
-            json.dump(
-                [c.to_dict() for c in self.__cupons],
-                f,
-                ensure_ascii=False,
-                indent=2
-            )
+        salvar_lista("cupons", [c.to_dict() for c in self.__cupons])
+        print("Cupons salvos com sucesso.")
 
     def carregar_dados(self):
-        try:
-            with open(self.arquivo_dados, "r", encoding="utf-8") as f:
-                dados = json.load(f)
-
-            self.__cupons = [Cupom.from_dict(d) for d in dados]
-
-        except FileNotFoundError:
-            self.__cupons = []
-
-        except json.JSONDecodeError:
-            raise ValueError("Erro ao ler arquivo de cupons")
+        dados = carregar_lista("cupons")
+        if not dados:
+            print("Nenhum cupom encontrado. Repositório vazio.")
+            return
+        self.__cupons = [Cupom.from_dict(c) for c in dados]
+        print(f"{len(self.__cupons)} cupons carregados com sucesso.")

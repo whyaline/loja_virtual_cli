@@ -1,0 +1,34 @@
+{
+  "proximo_sku": 4,
+  "produtos": [
+    {
+      "sku": 1,
+      "tipo": "fisico",
+      "nome": "Teclado Mecânico",
+      "categoria": "ELETRONICOS",
+      "preco": 250.0,
+      "estoque": 10,
+      "ativo": true,
+      "peso": 1.2
+    },
+    {
+      "sku": 2,
+      "tipo": "fisico",
+      "nome": "Mouse Gamer",
+      "categoria": "ELETRONICOS",
+      "preco": 150.0,
+      "estoque": 20,
+      "ativo": true,
+      "peso": 0.5
+    },
+    {
+      "sku": 3,
+      "tipo": "digital",
+      "nome": "Curso Python",
+      "categoria": "CURSOS",
+      "preco": 99.9,
+      "estoque": 0,
+      "ativo": true
+    }
+  ]
+}

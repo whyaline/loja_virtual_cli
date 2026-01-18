@@ -104,7 +104,7 @@ class Cliente:
         else:
             enderecos_str = "Nenhum"
 
-        return f'Nome: {self.nome}, CPF: {self.cpf}, Email: {self.email}, Endereços: [{enderecos_str}]'
+        return f'ID: {self.id}, Nome: {self.nome}, CPF: {self.cpf}, Email: {self.email}, Endereços: [{enderecos_str}]'
 
     def __repr__(self):
         return (f"Cliente(id={self.id!r}, nome={self.nome!r}, cpf={self.cpf!r}, "

@@ -160,7 +160,7 @@ class Pedido:
 
     @classmethod
     def from_dict(cls, data, cliente, endereco, carrinho):
-        pedido = cls(cliente, carrinho, frete_valor=data["frete_valor"], desconto=data["desconto"])
+        pedido = cls(cliente, endereco, carrinho, frete_valor=data["frete_valor"], desconto=data["desconto"])
         pedido._definir_id(data["id"])
         pedido.status = StatusPedido(data["status"])
         pedido.data_criacao = datetime.fromisoformat(data["data_criacao"])

@@ -1,0 +1,31 @@
+{
+  "proximo_id": 3,
+  "clientes": [
+    {
+      "id": 1,
+      "nome": "João Silva",
+      "cpf": "12345678901",
+      "email": "joao@email.com",
+      "enderecos": [
+        {
+          "cidade": "São Paulo",
+          "uf": "SP",
+          "cep": "01001000"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Maria Oliveira",
+      "cpf": "98765432100",
+      "email": "maria@email.com",
+      "enderecos": [
+        {
+          "cidade": "Rio de Janeiro",
+          "uf": "RJ",
+          "cep": "20040002"
+        }
+      ]
+    }
+  ]
+}

@@ -179,6 +179,9 @@ class ProdutoFisico(Produto):
 
 
 class ProdutoDigital(Produto):
+    def __init__(self, nome, categoria, preco, ativo):
+        super().__init__(nome, categoria, preco, estoque=0, ativo=ativo)
+
     def tem_frete(self):
         return False
 
@@ -194,7 +197,6 @@ class ProdutoDigital(Produto):
             nome=data["nome"],
             categoria=data["categoria"],
             preco=data["preco"],
-            estoque=data["estoque"],
             ativo=data["ativo"]
         )
         if data["sku"] is not None:

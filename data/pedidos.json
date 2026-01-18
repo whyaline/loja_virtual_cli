@@ -1,0 +1,29 @@
+{
+  "proximo_id": 2,
+  "pedidos": [
+    {
+      "id": 1,
+      "cliente_id": 1,
+      "endereco_id": 1,
+      "itens": [
+        {
+          "produto_sku": 1,
+          "nome": "Teclado Mecânico",
+          "quantidade": 1,
+          "preco_unitario": 250.0,
+          "subtotal": 250.0
+        },
+        {
+          "produto_sku": 3,
+          "nome": "Curso Python",
+          "quantidade": 1,
+          "preco_unitario": 99.9,
+          "subtotal": 99.9
+        }
+      ],
+      "total": 349.9,
+      "status": "PAGO",
+      "data_criacao": "2026-01-17T16:00:00"
+    }
+  ]
+}

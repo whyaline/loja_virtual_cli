@@ -10,9 +10,9 @@ from src.modelos.cupom import Cupom
 
 
 def seed():
-    seed_produtos()
+    #seed_produtos()
     seed_clientes()
-    seed_cupons()
+    #seed_cupons()
 
 
 # ======================
@@ -42,7 +42,8 @@ def seed_produtos():
             categoria="ELETRONICOS",
             preco=150.0,
             estoque=20,
-            ativo=True
+            ativo=True,
+            peso = 1.2
         )
     )
 

@@ -3,8 +3,11 @@ from src.dados.dados import salvar_lista, carregar_lista
 
 class RepositorioClientes:
     def __init__(self):
-        self.__clientes = []
-        self.__proximo_id = 1
+        dados = carregar_lista("clientes")
+        self.__proximo_id = dados["proximo_id"]
+        self.__clientes = [
+            Cliente.from_dict(c) for c in dados["clientes"]
+        ]
 
     # CRUD
     def adicionar_cliente(self, cliente: Cliente):
@@ -20,6 +23,7 @@ class RepositorioClientes:
         cliente._definir_id(self.__proximo_id)
         self.__proximo_id += 1
         self.__clientes.append(cliente)
+        self.salvar_dados()
 
     def listar_clientes(self):
         return self.__clientes.copy()
@@ -44,11 +48,14 @@ class RepositorioClientes:
                 raise ValueError(f'Já existe um cliente com email {email_novo}')
             cliente.email = email_novo
 
+        self.salvar_dados()
+
     def remover_cliente_por_id(self, id):
         cliente = self.buscar_cliente_por_id(id)
         if not cliente:
             raise ValueError("Cliente não encontrado")
         self.__clientes.remove(cliente)
+        self.salvar_dados()
 
     # Validações
     def existe_cpf(self, cpf, exceto=None):

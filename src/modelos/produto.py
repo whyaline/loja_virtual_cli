@@ -37,7 +37,7 @@ class Produto (ABC):
     @categoria.setter
     def categoria(self, categoria):
         validar_string(categoria, "Categoria")
-        self.__categoria = categoria
+        self.__categoria = categoria.upper()
 
     @property
     def preco(self):

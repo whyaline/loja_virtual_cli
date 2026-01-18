@@ -1,5 +1,5 @@
 {
-  "proximo_id": 3,
+  "proximo_id": 4,
   "clientes": [
     {
       "id": 1,
@@ -26,6 +26,13 @@
           "cep": "20040002"
         }
       ]
+    },
+    {
+      "id": 3,
+      "nome": "aline",
+      "cpf": "11111111111",
+      "email": "aline@aluno.com",
+      "enderecos": []
     }
   ]
 }

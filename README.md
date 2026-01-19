@@ -75,9 +75,11 @@ O sistema permite cadastrar produtos e clientes, gerenciar carrinhos e pedidos, 
 ```bash
 git clone <link-do-repo>
 cd loja_virtual_cli
+```bash
 
 2. **Execute a loja virtual:**
 ```bash
 python main.py
+```bash
 
 3. **Use os menus numerados para acessar clientes, produtos, carrinho e pedidos.**

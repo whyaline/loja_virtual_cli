@@ -1,29 +1,71 @@
 {
-  "proximo_id": 2,
+  "proximo_id": 3,
   "pedidos": [
     {
       "id": 1,
       "cliente_id": 1,
-      "endereco_id": 1,
+      "endereco": {
+        "cidade": "São Paulo",
+        "uf": "SP",
+        "cep": "01001000"
+      },
       "itens": [
         {
-          "produto_sku": 1,
+          "sku": 1,
           "nome": "Teclado Mecânico",
-          "quantidade": 1,
-          "preco_unitario": 250.0,
-          "subtotal": 250.0
-        },
-        {
-          "produto_sku": 3,
-          "nome": "Curso Python",
-          "quantidade": 1,
-          "preco_unitario": 99.9,
-          "subtotal": 99.9
+          "quantidade": 3,
+          "preco_unitario": 250.0
         }
       ],
-      "total": 349.9,
-      "status": "PAGO",
-      "data_criacao": "2026-01-17T16:00:00"
+      "frete_valor": 30,
+      "desconto": 20,
+      "status": "ENTREGUE",
+      "data_criacao": "2026-01-19T02:03:53.186530",
+      "codigo_rastreio": "FRJME0WSR1IKA",
+      "data_entrega": "2026-01-19T02:21:40.252511",
+      "total": 760.0,
+      "pagamentos": [
+        {
+          "pedido_id": 1,
+          "valor": 760.0,
+          "forma": "PIX",
+          "data": "2026-01-19T02:20:46.878509",
+          "status": "CONFIRMADO"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "cliente_id": 2,
+      "endereco": {
+        "cidade": "Rio de Janeiro",
+        "uf": "RJ",
+        "cep": "20040002"
+      },
+      "itens": [
+        {
+          "sku": 2,
+          "nome": "Mouse Gamer",
+          "quantidade": 2,
+          "preco_unitario": 150.0
+        }
+      ],
+      "frete_valor": 0,
+      "desconto": 0,
+      "status": "ENVIADO",
+      "data_criacao": "2026-01-19T02:26:06.867430",
+      "codigo_rastreio": "ZH44KZNO19I0G",
+      "data_entrega": null,
+      "total": 300.0,
+      "pagamentos": [
+        {
+          "pedido_id": 2,
+          "valor": 300.0,
+          "forma": "CREDITO",
+          "data": "2026-01-19T02:26:42.783459",
+          "status": "CONFIRMADO"
+        }
+      ]
     }
   ]
 }

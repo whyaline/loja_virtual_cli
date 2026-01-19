@@ -71,15 +71,15 @@ O sistema permite cadastrar produtos e clientes, gerenciar carrinhos e pedidos, 
 
 ## 🚀 Como Rodar o Projeto
 
-1. **Clone o repositório:**
+1. Clone o repositório:
 ```bash
-git clone <link-do-repo>
+git clone https://github.com/whyaline/loja_virtual_cli
+```
+2. Acesse a pasta do projeto:
+```bash
 cd loja_virtual_cli
-```bash
-
-2. **Execute a loja virtual:**
+```
+3. Execute o sistema:
 ```bash
 python main.py
-```bash
-
-3. **Use os menus numerados para acessar clientes, produtos, carrinho e pedidos.**
+4.Use os menus numerados para acessar clientes, produtos, carrinho e pedidos.
